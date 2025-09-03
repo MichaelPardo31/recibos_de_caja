@@ -1,0 +1,59 @@
+<div class="container">
+  <h1>{{ titulo }}</h1>
+
+  <section class="card">
+    <h2>Agregar nuevo estudiante</h2>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="row">
+        <label>Nombres</label>
+        <input type="text" formControlName="nombres" placeholder="Ada" />
+        <small class="err" *ngIf="form.get('nombres')?.touched && form.get('nombres')?.invalid">Required</small>
+      </div>
+
+      <div class="row">
+        <label>Apellidos</label>
+        <input type="text" formControlName="apellidos" placeholder="Lovelace" />
+        <small class="err" *ngIf="form.get('apellidos')?.touched && form.get('apellidos')?.invalid">Required</small>
+      </div>
+
+      <div class="row">
+        <label>Email</label>
+        <input type="email" formControlName="email" placeholder="ada@ejemplo.edu.co" />
+        <small class="err" *ngIf="form.get('email')?.touched && form.get('email')?.invalid">Ingrese un email correcto</small>
+      </div>
+
+      <button type="submit" [disabled]="form.invalid || cargando">Add</button>
+    </form>
+  </section>
+
+  <section class="card">
+    <div class="header">
+      <h2>Estudiantes existentes</h2>
+      <button type="button" (click)="cargarEstudiantes()" [disabled]="cargando">Recargar</button>
+    </div>
+
+    <div *ngIf="error" class="error">{{ error }}</div>
+    <div *ngIf="cargando">Cargando…</div>
+
+    <table *ngIf="!cargando && estudiantes.length" class="table">
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>Nombres</th>
+        <th>Apellidos</th>
+        <th>Email</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let e of estudiantes; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ e.nombres }}</td>
+        <td>{{ e.apellidos }}</td>
+        <td>{{ e.email }}</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <p *ngIf="!cargando && !estudiantes.length" class="muted">Sin registros</p>
+  </section>
+</div>
