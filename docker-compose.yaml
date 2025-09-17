@@ -11,6 +11,23 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     restart: always
+
+  backend:
+    build: ./backend
+    depends_on:
+      - db
+    ports:
+      - "8090:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/ejemplo-db
+
+  frontend:
+      build: ./frontend
+      ports:
+        - "80:80"
+      depends_on:
+        - backend
+
 volumes:
   mysql_data:
 
