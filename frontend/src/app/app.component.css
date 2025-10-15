@@ -29,3 +29,7 @@ button[disabled] { opacity: 0.6; cursor: not-allowed; }
 .table th, .table td { border-bottom: 1px solid #24365d; padding: 8px 6px; text-align: left; }
 .muted { color: var(--muted); }
 .error { color: var(--danger); margin: 8px 0; }
+
+.suggestions { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; background: rgba(58,94,163,0.12); border: 1px solid #3a5ea3; border-radius: 12px; padding: 8px; }
+.chip { background: #888c97; border: 1px solid #3a5ea3; border-radius: 999px; padding: 6px 10px; font-size: 12px; }
+.chip:hover { background: #cfd1d6; }
