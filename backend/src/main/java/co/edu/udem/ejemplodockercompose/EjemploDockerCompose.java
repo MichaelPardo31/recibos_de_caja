@@ -26,10 +26,14 @@ public class EjemploDockerCompose {
     @EventListener(ApplicationReadyEvent.class)
     public void seedProducts() {
         if (productRepository.count() > 0) return;
-        productRepository.save(make("Mouse Óptico", 15.90, 30));
-        productRepository.save(make("Teclado Mecánico", 49.90, 20));
-        productRepository.save(make("Monitor 24\"", 129.00, 10));
-        productRepository.save(make("USB 64GB", 12.50, 100));
+        productRepository.save(make("Mouse Óptico", 25000, 30));
+        productRepository.save(make("Teclado Mecánico", 85000, 20));
+        productRepository.save(make("Monitor 24\"", 450000, 10));
+        productRepository.save(make("USB 64GB", 35000, 100));
+        productRepository.save(make("Auriculares Bluetooth", 120000, 15));
+        productRepository.save(make("Cargador USB-C", 18000, 50));
+        productRepository.save(make("Mousepad Gaming", 15000, 25));
+        productRepository.save(make("Webcam HD", 95000, 12));
     }
 
     private Product make(String name, double price, int stock) {

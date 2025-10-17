@@ -6,6 +6,6 @@ RUN mvn -q -DskipTests package
 
 FROM eclipse-temurin:24-jre-alpine
 WORKDIR /app
-COPY --from=build /app/target/*.jar app-estudiantes.jar
+COPY --from=build /app/target/*.jar app-recibos.jar
 EXPOSE 8080
-CMD ["java", "-jar", "app-estudiantes.jar"]
+CMD ["java", "-jar", "app-recibos.jar"]
