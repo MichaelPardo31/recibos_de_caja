@@ -116,10 +116,10 @@ export class AppComponent implements OnInit {
     // Header
     doc.setFontSize(20);
     doc.text('TIENDA TECNOLÓGICA', 105, 20, { align: 'center' });
-    
+
     doc.setFontSize(12);
     doc.text('RECIBO DE CAJA', 105, 30, { align: 'center' });
-    
+
     doc.setFontSize(10);
     doc.text(`Fecha: ${dateStr}`, 20, 45);
     doc.text(`Hora: ${timeStr}`, 20, 52);
@@ -132,7 +132,7 @@ export class AppComponent implements OnInit {
     doc.text('CANT', 120, y);
     doc.text('PRECIO', 140, y);
     doc.text('SUBTOTAL', 160, y);
-    
+
     y += 5;
     doc.line(20, y, 190, y);
     y += 10;
@@ -141,8 +141,8 @@ export class AppComponent implements OnInit {
     for (const item of this.items) {
       doc.text(item.productName.substring(0, 25), 20, y);
       doc.text(item.quantity.toString(), 120, y);
-      doc.text(`$${item.unitPrice.toFixed(0)}`, 140, y);
-      doc.text(`$${item.subtotal.toFixed(0)}`, 160, y);
+      doc.text(`$${item.unitPrice.toFixed(0)} COP`, 140, y);
+      doc.text(`$${item.subtotal.toFixed(0)} COP`, 160, y);
       y += 8;
     }
 
@@ -151,7 +151,7 @@ export class AppComponent implements OnInit {
     doc.line(20, y, 190, y);
     y += 10;
     doc.setFontSize(14);
-    doc.text(`TOTAL: $${this.total.toFixed(0)}`, 20, y);
+    doc.text(`TOTAL: $${this.total.toFixed(0)} COP`, 20, y);
 
     // Footer
     y += 20;
