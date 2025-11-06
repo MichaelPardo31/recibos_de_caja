@@ -1,6 +1,6 @@
 services:
   db:
-    image: mysql:latest
+    image: mysql:8.0.39
     environment:
       MYSQL_ROOT_PASSWORD: mysql123
       MYSQL_DATABASE: ejemplo-db
@@ -17,7 +17,7 @@ services:
       retries: 10
 
   backend:
-    build: ./backend
+    image: esteban652/recibos-backend:latest
     depends_on:
       db:
         condition: service_healthy
@@ -27,7 +27,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/ejemplo-db
 
   frontend:
-      build: ./frontend
+      image: esteban652/recibos-frontend:latest
       ports:
         - "80:80"
       depends_on:
