@@ -2,6 +2,7 @@ package co.edu.udem.ejemplodockercompose.controller;
 
 import co.edu.udem.ejemplodockercompose.model.Product;
 import co.edu.udem.ejemplodockercompose.service.ProductAppService;
+import co.edu.udem.ejemplodockercompose.repository.ProductRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,9 @@ class ProductControllerTest {
     @MockBean
     private ProductAppService productAppService;
 
+    @MockBean
+    private ProductRepository productRepository;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -35,6 +39,9 @@ class ProductControllerTest {
 
     @BeforeEach
     void setUp() {
+        // Evitar que el ApplicationReadyEvent de la app intente sembrar datos usando el repositorio real
+        when(productRepository.count()).thenReturn(1L);
+
         testProduct = new Product();
         testProduct.setId(1L);
         testProduct.setName("Mouse Óptico");
