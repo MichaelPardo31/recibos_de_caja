@@ -13,11 +13,11 @@ import java.math.BigDecimal;
 @SpringBootApplication
 public class EjemploDockerCompose {
 
-    private final ProductRepository productRepository;
+    // Inyectar opcionalmente para permitir tests de slices (p.ej. @WebMvcTest) sin JPA
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private ProductRepository productRepository;
 
-    public EjemploDockerCompose(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    public EjemploDockerCompose() { }
 
     public static void main(String[] args) {
         SpringApplication.run(EjemploDockerCompose.class, args);
@@ -25,6 +25,7 @@ public class EjemploDockerCompose {
 
     @EventListener(ApplicationReadyEvent.class)
     public void seedProducts() {
+        if (productRepository == null) return;
         if (productRepository.count() > 0) return;
         productRepository.save(make("Mouse Óptico", 25000, 30));
         productRepository.save(make("Teclado Mecánico", 85000, 20));
