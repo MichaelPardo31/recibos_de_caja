@@ -174,6 +174,95 @@ docker compose up -d --build
 - Backend base: `http://localhost:8090/api`
 - OpenAPI/Swagger UI (si está habilitado): `http://localhost:8090/swagger-ui/index.html`
 
+## Pipeline de CI/CD
+
+El proyecto incluye un pipeline de CI/CD implementado con **GitHub Actions** que automatiza:
+
+1. **Compilación/Build**: Compila el backend con Maven y el frontend con Angular
+2. **Pruebas unitarias**: Ejecuta tests del backend (Maven) y frontend (Angular/Karma)
+3. **Generación de imágenes Docker**: Construye las imágenes Docker para backend y frontend
+4. **Publicación en Docker Hub**: Publica automáticamente las imágenes en Docker Hub
+
+### Configuración del Pipeline
+
+El workflow se ejecuta automáticamente en:
+- Push a las ramas `main` y `develop`
+- Pull requests hacia `main` y `develop`
+
+**Ubicación del workflow**: `.github/workflows/ci-cd.yml`
+
+### Configuración de Secrets en GitHub
+
+Para que el pipeline pueda publicar imágenes en Docker Hub, necesitas configurar el siguiente secret en tu repositorio de GitHub:
+
+1. Ve a tu repositorio en GitHub
+2. Navega a **Settings** → **Secrets and variables** → **Actions**
+3. Haz clic en **New repository secret**
+4. Crea un secret con:
+   - **Name**: `DOCKERHUB_TOKEN`
+   - **Value**: Tu token de acceso de Docker Hub
+
+#### Cómo obtener el token de Docker Hub:
+
+1. Inicia sesión en [Docker Hub](https://hub.docker.com/)
+2. Ve a **Account Settings** → **Security**
+3. Haz clic en **New Access Token**
+4. Asigna un nombre (ej: "GitHub Actions CI/CD")
+5. Copia el token generado (solo se muestra una vez)
+6. Pega este token como valor del secret `DOCKERHUB_TOKEN` en GitHub
+
+### Etapas del Pipeline
+
+#### 1. Build and Test
+- **Backend**: Compila con Maven, ejecuta tests y genera el JAR
+- **Frontend**: Instala dependencias, ejecuta tests y genera el build de producción
+
+#### 2. Build Docker Images (solo en push a main/develop)
+- Construye las imágenes Docker usando los Dockerfiles
+- Etiqueta las imágenes con:
+  - `latest` (solo en la rama principal)
+  - Nombre de la rama
+  - SHA del commit
+- Publica las imágenes en Docker Hub: `esteban652/recibos-backend` y `esteban652/recibos-frontend`
+
+### Verificación del Pipeline
+
+Puedes verificar el estado del pipeline:
+- En la pestaña **Actions** de tu repositorio en GitHub
+- Cada commit mostrará el estado del pipeline (✓ éxito o ✗ fallo)
+
+### Notas sobre el Pipeline
+
+- Los tests unitarios están implementados para backend (JUnit/Mockito) y frontend (Jasmine/Karma)
+- El pipeline fallará si algún test falla, asegurando calidad del código
+- Las imágenes se construyen con cache para optimizar tiempos de build
+- Solo se publican imágenes en Docker Hub cuando hay push a `main` o `develop` (no en PRs)
+
+### Tests Unitarios
+
+El proyecto incluye tests unitarios completos:
+
+**Backend (Java/Spring Boot)**:
+- Tests para `ProductController` y `TicketController` (usando `@WebMvcTest`)
+- Tests para `ProductAppService` y `TicketAppService` (usando Mockito)
+- Cobertura de casos exitosos y de error (validaciones, stock insuficiente, etc.)
+
+**Frontend (Angular)**:
+- Tests para `ProductService` y `TicketService` (usando `HttpClientTestingModule`)
+- Tests completos para `AppComponent` (formularios, validaciones, lógica de negocio)
+- Tests de integración con servicios mockeados
+
+Para ejecutar los tests localmente:
+```bash
+# Backend
+cd backend
+mvn test
+
+# Frontend
+cd frontend
+npm test
+```
+
 ## Notas
 - JPA está configurado con `spring.jpa.hibernate.ddl-auto=update` para evolucionar el esquema automáticamente en desarrollo.
 - Cambia credenciales de MySQL en producción y evita usar `mysql:latest` fijando una versión.
