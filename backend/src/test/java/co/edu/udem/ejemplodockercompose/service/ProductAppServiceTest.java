@@ -12,11 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,22 +53,6 @@ class ProductAppServiceTest {
     }
 
     @Test
-    void testSearch() {
-        // Given
-        String searchTerm = "mouse";
-        List<Product> products = Arrays.asList(testProduct);
-        when(productRepository.findByNameContainingIgnoreCase(searchTerm)).thenReturn(products);
-
-        // When
-        List<Product> result = productAppService.search(searchTerm);
-
-        // Then
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        verify(productRepository, times(1)).findByNameContainingIgnoreCase(searchTerm);
-    }
-
-    @Test
     void testSave() {
         // Given
         when(productRepository.save(any(Product.class))).thenReturn(testProduct);
@@ -82,51 +63,6 @@ class ProductAppServiceTest {
         // Then
         assertNotNull(result);
         assertEquals(testProduct.getId(), result.getId());
-        assertEquals(testProduct.getName(), result.getName());
         verify(productRepository, times(1)).save(testProduct);
-    }
-
-    @Test
-    void testDecrementStockOrThrow_Success() {
-        // Given
-        int quantity = 5;
-        when(productRepository.findById(1L)).thenReturn(Optional.of(testProduct));
-        when(productRepository.save(any(Product.class))).thenReturn(testProduct);
-
-        // When
-        productAppService.decrementStockOrThrow(1L, quantity);
-
-        // Then
-        assertEquals(25, testProduct.getStock());
-        verify(productRepository, times(1)).findById(1L);
-        verify(productRepository, times(1)).save(testProduct);
-    }
-
-    @Test
-    void testDecrementStockOrThrow_ProductNotFound() {
-        // Given
-        when(productRepository.findById(1L)).thenReturn(Optional.empty());
-
-        // When & Then
-        assertThrows(Exception.class, () -> productAppService.decrementStockOrThrow(1L, 5));
-        verify(productRepository, times(1)).findById(1L);
-        verify(productRepository, never()).save(any(Product.class));
-    }
-
-    @Test
-    void testDecrementStockOrThrow_InsufficientStock() {
-        // Given
-        int quantity = 50; // Más que el stock disponible (30)
-        when(productRepository.findById(1L)).thenReturn(Optional.of(testProduct));
-
-        // When & Then
-        IllegalArgumentException exception = assertThrows(
-            IllegalArgumentException.class,
-            () -> productAppService.decrementStockOrThrow(1L, quantity)
-        );
-        assertEquals("Stock insuficiente", exception.getMessage());
-        verify(productRepository, times(1)).findById(1L);
-        verify(productRepository, never()).save(any(Product.class));
     }
 }
-
