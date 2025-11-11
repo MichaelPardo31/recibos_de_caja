@@ -182,7 +182,8 @@ describe('AppComponent', () => {
           subtotal: 20000
         }
       ];
-      component.computeTotal();
+      // computeTotal se llama automáticamente cuando se agregan items
+      component.total = 40000; // Simulamos el total calculado
     });
 
     it('should remove item at specified index', () => {
@@ -219,26 +220,48 @@ describe('AppComponent', () => {
     });
 
     it('should generate ticket when items exist', () => {
+      const itemsBeforeCall = [...component.items]; // Capturamos los items antes de la llamada
       component.generateTicket();
-      expect(ticketService.generateTicket).toHaveBeenCalledWith(component.items);
+      expect(ticketService.generateTicket).toHaveBeenCalledWith(itemsBeforeCall);
       expect(component.items.length).toBe(0);
       expect(component.total).toBe(0);
     });
   });
 
-  describe('computeTotal', () => {
-    it('should calculate total from items', () => {
+  describe('computeTotal (tested indirectly)', () => {
+    it('should calculate total when adding items', () => {
+      component.ngOnInit();
+      component.products = mockProducts;
+      const product = mockProducts[0];
+      
+      component.form.patchValue({
+        product: product.name,
+        quantity: 2,
+        unitPrice: product.unitPrice
+      });
+      component.addItem();
+      
+      // El total se calcula automáticamente al agregar items
+      expect(component.total).toBeGreaterThan(0);
+      expect(component.total).toBe(50000); // 2 * 25000
+    });
+
+    it('should recalculate total when removing items', () => {
       component.items = [
         { productId: 1, productName: 'Product 1', unitPrice: 10000, quantity: 2, subtotal: 20000 },
         { productId: 2, productName: 'Product 2', unitPrice: 15000, quantity: 1, subtotal: 15000 }
       ];
-      component.computeTotal();
-      expect(component.total).toBe(35000);
+      component.total = 35000; // Total inicial
+      
+      component.removeItem(0); // Remover el primer item
+      
+      // El total debe haberse recalculado
+      expect(component.total).toBe(15000); // Solo queda el segundo item
     });
 
-    it('should return 0 when items array is empty', () => {
+    it('should have total 0 when items array is empty', () => {
       component.items = [];
-      component.computeTotal();
+      component.removeItem(0); // No debería hacer nada pero verifica que total sea 0
       expect(component.total).toBe(0);
     });
   });

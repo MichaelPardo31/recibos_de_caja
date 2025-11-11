@@ -4,6 +4,7 @@ import { TicketService } from './ticket.service';
 import { Ticket } from '../models/ticket.model';
 import { SaleItem } from '../models/sale-item.model';
 import { environment } from '../../environments/environment';
+import { skip } from 'rxjs';
 
 describe('TicketService', () => {
   let service: TicketService;
@@ -38,7 +39,10 @@ describe('TicketService', () => {
         }
       ];
 
-      service.getAll$().subscribe(tickets => {
+      // El BehaviorSubject emite primero el valor inicial ([]), luego el valor de la respuesta
+      service.getAll$().pipe(
+        skip(1)
+      ).subscribe(tickets => {
         expect(tickets).toEqual(mockTickets);
         done();
       });
@@ -49,7 +53,9 @@ describe('TicketService', () => {
     });
 
     it('should return empty array if API returns empty', (done) => {
-      service.getAll$().subscribe(tickets => {
+      service.getAll$().pipe(
+        skip(1)
+      ).subscribe(tickets => {
         expect(tickets).toEqual([]);
         done();
       });

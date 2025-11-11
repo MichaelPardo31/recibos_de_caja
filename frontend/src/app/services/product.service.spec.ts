@@ -3,6 +3,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { ProductService } from './product.service';
 import { Product } from '../models/product.model';
 import { environment } from '../../environments/environment';
+import { skip } from 'rxjs';
 
 describe('ProductService', () => {
   let service: ProductService;
@@ -33,7 +34,11 @@ describe('ProductService', () => {
         { id: 2, name: 'Teclado Mecánico', unitPrice: 85000, stock: 20 }
       ];
 
-      service.getAll$().subscribe(products => {
+      // El BehaviorSubject emite primero el valor inicial ([]), luego el valor de la respuesta
+      service.getAll$().pipe(
+        // Saltamos el primer valor (array vacío inicial)
+        skip(1)
+      ).subscribe(products => {
         expect(products).toEqual(mockProducts);
         done();
       });
@@ -44,7 +49,9 @@ describe('ProductService', () => {
     });
 
     it('should return empty array if API returns empty', (done) => {
-      service.getAll$().subscribe(products => {
+      service.getAll$().pipe(
+        skip(1)
+      ).subscribe(products => {
         expect(products).toEqual([]);
         done();
       });
