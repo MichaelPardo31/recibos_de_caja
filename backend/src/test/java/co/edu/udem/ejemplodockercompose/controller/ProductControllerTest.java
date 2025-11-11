@@ -3,6 +3,7 @@ package co.edu.udem.ejemplodockercompose.controller;
 import co.edu.udem.ejemplodockercompose.model.Product;
 import co.edu.udem.ejemplodockercompose.service.ProductAppService;
 import co.edu.udem.ejemplodockercompose.repository.ProductRepository;
+import co.edu.udem.ejemplodockercompose.EjemploDockerCompose;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,11 @@ class ProductControllerTest {
 
     @MockBean
     private ProductRepository productRepository;
+
+    // Evita que el contexto intente construir la @SpringBootApplication real,
+    // que requiere repositorios en el constructor.
+    @MockBean
+    private EjemploDockerCompose application;
 
     @Autowired
     private ObjectMapper objectMapper;
