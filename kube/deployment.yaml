@@ -81,6 +81,7 @@ spec:
       containers:
         - name: backend
           image: esteban652/recibos-backend:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
@@ -130,6 +131,7 @@ spec:
       containers:
         - name: frontend
           image: esteban652/recibos-frontend:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
           envFrom:
