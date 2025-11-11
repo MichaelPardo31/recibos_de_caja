@@ -36,3 +36,13 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Node.js / Frontend ###
+node_modules/
+.angular/
+dist/
+*.log
+
+### Archivos temporales ###
+tatus
+*.tmp
